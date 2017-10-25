@@ -26,7 +26,10 @@ namespace Reversi
 
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            x_veld.Text = "6";
+            y_veld.Text = "6";
+            NieuwSpeelVeld();
         }
 
                         
@@ -77,13 +80,9 @@ namespace Reversi
                     {
                         this.TekenBol(pea.Graphics, blauw, positie * n + 1, positie * m + 1);
                     }
-                    if (bol[n,m] == -1 && helpaan)
+                    if (bol[n,m] == -1 && helpaan == true)
                     {
                         this.TekenHelp(pea.Graphics, positie * n + 1, positie * m + 1);
-                    }
-                    if (bol[n, m] == -2)
-                    {
-                        this.TekenBol(pea.Graphics, Brushes.Yellow, positie * n + 1, positie * m + 1);
                     }
                 }
 
@@ -195,48 +194,53 @@ namespace Reversi
 
         public void Nieuw_Spel(object sender, EventArgs ea)
         {
-            //Haal de array leeg
-            for (int n = 0; n < veldx; n++)
-                for (int m = 0; m < veldy; m++)
-                {
-                    bol[n, m] = 0;
-                }
-            try
-            {
-                veldx = Int32.Parse(x_veld.Text);
-                    if (veldx > 15)
-                        veldx = 15;
-                    if (veldx < 3)
-                        veldx = 3;
-                veldy = Int32.Parse(y_veld.Text);
-                    if (veldy > 8)
-                        veldy = 8;
-                    if (veldy < 3)
-                        veldy = 3;
-                this.Error.Text = "";
-                this.Reset.Text = "Nieuw spel";
-                speelveld.Invalidate();
-            }
-            catch
-            {
-                Error.Text = "vul een geldige waarde in";
-            }
+            this.NieuwSpeelVeld();
+        }
 
-            //Vul de array met de beginsituatie
-            for (int n = 0; n < veldx; n++)
-                for (int m = 0; m < veldy; m++)
-                {
-                    if (n == veldx / 2 && m == veldy / 2)
-                    {
-                        bol[n, m] = 1;
-                        bol[n - 1, m - 1] = 1;
-                        bol[n - 1, m] = 2;
-                        bol[n, m - 1] = 2;
-                    }
-                }
+        public void NieuwSpeelVeld()
+        {
+			//Haal de array leeg
+			for (int n = 0; n < veldx; n++)
+				for (int m = 0; m < veldy; m++)
+				{
+					bol[n, m] = 0;
+				}
+			try
+			{
+				veldx = Int32.Parse(x_veld.Text);
+				if (veldx > 15)
+					veldx = 15;
+				if (veldx < 3)
+					veldx = 3;
+				veldy = Int32.Parse(y_veld.Text);
+				if (veldy > 8)
+					veldy = 8;
+				if (veldy < 3)
+					veldy = 3;
+				this.Error.Text = "";
+				this.Reset.Text = "Nieuw spel";
+				speelveld.Invalidate();
+			}
+			catch
+			{
+				Error.Text = "vul een geldige waarde in";
+			}
 
-            BerekenAantalStenen();
-            playercounter = 1;
+			//Vul de array met de beginsituatie
+			for (int n = 0; n < veldx; n++)
+				for (int m = 0; m < veldy; m++)
+				{
+					if (n == veldx / 2 && m == veldy / 2)
+					{
+						bol[n, m] = 1;
+						bol[n - 1, m - 1] = 1;
+						bol[n - 1, m] = 2;
+						bol[n, m - 1] = 2;
+					}
+				}
+
+			BerekenAantalStenen();
+			playercounter = 1;
         }
 
         private void speelveld_MouseClick(object sender, MouseEventArgs mea)
@@ -275,14 +279,12 @@ namespace Reversi
             }
             aantalRood = ar;
             aantalBlauw = ab;
-            System.Diagnostics.Debug.WriteLine(ar);
-            System.Diagnostics.Debug.WriteLine(ab);
         }
 
         private void Help_Click(object sender, EventArgs e)
         {
             helpaan = !helpaan;
-            this.Invalidate();
+            speelveld.Invalidate();
         }
 
         // maak een methode voor het checken van de omliggenden plaatsen 
