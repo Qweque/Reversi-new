@@ -56,6 +56,7 @@
             this.Help.TabIndex = 1;
             this.Help.Text = "Help";
             this.Help.UseVisualStyleBackColor = true;
+            this.Help.Click += new System.EventHandler(this.Help_Click);
             // 
             // speelveld
             // 

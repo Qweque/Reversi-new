@@ -279,6 +279,12 @@ namespace Reversi
             System.Diagnostics.Debug.WriteLine(ab);
         }
 
+        private void Help_Click(object sender, EventArgs e)
+        {
+            helpaan = !helpaan;
+            this.Invalidate();
+        }
+
         // maak een methode voor het checken van de omliggenden plaatsen 
         public void plaatsSpeler(int x, int y)
         {
