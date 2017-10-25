@@ -16,11 +16,11 @@ namespace Reversi
         int veldx = 6; int veldy = 6;        
         int playercounter = 1;
         bool helpaan = true;
-        bool plaatcheck;
         int[,] bol = new int[15, 8];
         int[,] help = new int[15, 8];
         const int positie = 50;
         const int BolSize = positie - 2;
+        int aantalRood = 2, aantalBlauw = 2;
         SolidBrush rood = new SolidBrush(Color.FromArgb(255, 0, 0));
         SolidBrush blauw = new SolidBrush(Color.FromArgb(0, 0, 255));
 
@@ -234,7 +234,8 @@ namespace Reversi
                         bol[n, m - 1] = 2;
                     }
                 }
-            
+
+            BerekenAantalStenen();
             playercounter = 1;
         }
 
@@ -257,6 +258,27 @@ namespace Reversi
             gr.DrawEllipse(Pens.Black, x + BolSize / 4, y + BolSize / 4, BolSize / 2, BolSize / 2);
         }
 
+        public void BerekenAantalStenen()
+        {
+            int ar = 0;
+            int ab = 0;
+            for (int x = 0; x < veldx; x++)
+            {
+                for (int y = 0; y < veldy; y++)
+                {
+                    if (bol[x, y] == 1)
+                        ar++;
+                    
+                    if (bol[x, y] == 2)
+                        ab++;
+                }
+            }
+            aantalRood = ar;
+            aantalBlauw = ab;
+            System.Diagnostics.Debug.WriteLine(ar);
+            System.Diagnostics.Debug.WriteLine(ab);
+        }
+
         // maak een methode voor het checken van de omliggenden plaatsen 
         public void plaatsSpeler(int x, int y)
         {
@@ -266,6 +288,7 @@ namespace Reversi
                 bol[x, y] = playercounter;
                 VerwijderMogelijkeStenen();
                 DraaiIngeslotenStenenOm(x, y);
+                BerekenAantalStenen();
                 playercounter = tegenstander(playercounter);
                 speelveld.Invalidate();
             }
