@@ -11,19 +11,22 @@ using System.Windows.Forms;
 namespace Reversi
 {
     public partial class Form1 : Form
-    {
-        
-        int veldx = 6; int veldy = 6;        
+    {       
+        //Member Variablen
+        int veldx = 6; int veldy = 6;
+        string Winnaar;
         int playercounter = 1;
+        bool spelstatus = true;
+        int passcount = 0;
         bool helpaan = true;
-        int[,] bol = new int[15, 8];
-        int[,] help = new int[15, 8];
+        int[,] bol = new int[15, 8];        
         const int positie = 50;
         const int BolSize = positie - 2;
         int aantalRood = 2, aantalBlauw = 2;
         SolidBrush rood = new SolidBrush(Color.FromArgb(255, 0, 0));
         SolidBrush blauw = new SolidBrush(Color.FromArgb(0, 0, 255));
 
+        //Methodes
         public Form1()
         {
             InitializeComponent();
@@ -32,7 +35,17 @@ namespace Reversi
             NieuwSpeelVeld();
         }
 
-                        
+        private void Form1_Paint(object sender, PaintEventArgs pea)
+        {
+            this.TekenBol(pea.Graphics, rood, 50, 65);
+            this.TekenBol(pea.Graphics, blauw, 200, 65);
+            if (spelstatus == false)
+            {
+                winnaar.Text = Winnaar + " is de winnaar";
+            }
+        }
+
+        //Tekenfuncties
         private void Tekenspeelveld(object sender, PaintEventArgs pea)
         {
             
@@ -86,6 +99,16 @@ namespace Reversi
                     }
                 }
 
+        }
+
+        public void TekenBol(Graphics gr, Brush p, int x, int y)
+        {
+            gr.FillEllipse(p, x, y, BolSize, BolSize);
+        }
+
+        public void TekenHelp(Graphics gr, int x, int y)
+        {
+            gr.DrawEllipse(Pens.Black, x + BolSize / 4, y + BolSize / 4, BolSize / 2, BolSize / 2);
         }
 
         public void CheckMogelijkeStenen()
@@ -192,6 +215,7 @@ namespace Reversi
                 return 1;
         }
 
+        //Knopen en Klikken
         public void Nieuw_Spel(object sender, EventArgs ea)
         {
             this.NieuwSpeelVeld();
@@ -248,19 +272,10 @@ namespace Reversi
             //Vul de array met de juiste waarde op de juiste plek
             int vakjex = mea.X / positie;
             int vakjey = mea.Y / positie;
-            plaatsSpeler(vakjex, vakjey);
-        }
-
-
-        public void TekenBol(Graphics gr, Brush p, int x, int y)
-        {
-            gr.FillEllipse(p, x, y, BolSize, BolSize);
-        }
-
-        public void TekenHelp(Graphics gr, int x, int y)
-        {
-            gr.DrawEllipse(Pens.Black, x + BolSize / 4, y + BolSize / 4, BolSize / 2, BolSize / 2);
-        }
+            passcount = 0;
+            if(spelstatus)
+                plaatsSpeler(vakjex, vakjey);
+        }        
 
         public void BerekenAantalStenen()
         {
@@ -274,17 +289,28 @@ namespace Reversi
                         ar++;
                     
                     if (bol[x, y] == 2)
-                        ab++;
+                        ab++;                    
                 }
             }
             aantalRood = ar;
             aantalBlauw = ab;
+            score_blauw.Text = aantalBlauw.ToString() + " punten";
+            score_rood.Text = aantalRood.ToString() + " punten";
         }
 
         private void Help_Click(object sender, EventArgs e)
         {
             helpaan = !helpaan;
             speelveld.Invalidate();
+        }
+                
+        private void button1_Click(object sender, EventArgs e)
+        {
+            passcount++;
+            if (passcount == 2)
+            {
+                spelstatus = false;
+            }
         }
 
         // maak een methode voor het checken van de omliggenden plaatsen 

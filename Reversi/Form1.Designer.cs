@@ -34,6 +34,11 @@
             this.max = new System.Windows.Forms.Label();
             this.Error = new System.Windows.Forms.Label();
             this.Playercounter = new System.Windows.Forms.Label();
+            this.score_rood = new System.Windows.Forms.Label();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.score_blauw = new System.Windows.Forms.Label();
+            this.winnaar = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Reset
@@ -60,9 +65,9 @@
             // 
             // speelveld
             // 
-            this.speelveld.Location = new System.Drawing.Point(20, 100);
+            this.speelveld.Location = new System.Drawing.Point(20, 150);
             this.speelveld.Name = "speelveld";
-            this.speelveld.Size = new System.Drawing.Size(5000, 5000);
+            this.speelveld.Size = new System.Drawing.Size(1100, 500);
             this.speelveld.TabIndex = 2;
             this.speelveld.Paint += new System.Windows.Forms.PaintEventHandler(this.Tekenspeelveld);
             this.speelveld.MouseClick += new System.Windows.Forms.MouseEventHandler(this.speelveld_MouseClick);
@@ -121,11 +126,58 @@
             this.Playercounter.Size = new System.Drawing.Size(0, 20);
             this.Playercounter.TabIndex = 8;
             // 
+            // score_rood
+            // 
+            this.score_rood.AutoSize = true;
+            this.score_rood.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.score_rood.ForeColor = System.Drawing.Color.Red;
+            this.score_rood.Location = new System.Drawing.Point(140, 100);
+            this.score_rood.Name = "score_rood";
+            this.score_rood.Size = new System.Drawing.Size(120, 25);
+            this.score_rood.TabIndex = 9;
+            this.score_rood.Text = "score_rood";
+            // 
+            // score_blauw
+            // 
+            this.score_blauw.AutoSize = true;
+            this.score_blauw.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.score_blauw.ForeColor = System.Drawing.Color.Blue;
+            this.score_blauw.Location = new System.Drawing.Point(375, 100);
+            this.score_blauw.Name = "score_blauw";
+            this.score_blauw.Size = new System.Drawing.Size(133, 25);
+            this.score_blauw.TabIndex = 10;
+            this.score_blauw.Text = "score_blauw";
+            // 
+            // winnaar
+            // 
+            this.winnaar.AutoSize = true;
+            this.winnaar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.winnaar.Location = new System.Drawing.Point(600, 100);
+            this.winnaar.Name = "winnaar";
+            this.winnaar.Size = new System.Drawing.Size(70, 25);
+            this.winnaar.TabIndex = 11;
+            this.winnaar.Text = "label1";
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(735, 30);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(150, 30);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Pass";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1040, 610);
+            this.ClientSize = new System.Drawing.Size(1042, 653);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.winnaar);
+            this.Controls.Add(this.score_blauw);
+            this.Controls.Add(this.score_rood);
             this.Controls.Add(this.Playercounter);
             this.Controls.Add(this.Error);
             this.Controls.Add(this.max);
@@ -137,6 +189,7 @@
             this.Controls.Add(this.Reset);
             this.Name = "Form1";
             this.Text = "Reversi";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,6 +206,11 @@
         private System.Windows.Forms.Label max;
         private System.Windows.Forms.Label Error;
         private System.Windows.Forms.Label Playercounter;
+        private System.Windows.Forms.Label score_rood;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Label score_blauw;
+        private System.Windows.Forms.Label winnaar;
+        private System.Windows.Forms.Button button1;
     }
 
 }
