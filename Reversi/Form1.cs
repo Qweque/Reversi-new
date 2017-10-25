@@ -147,6 +147,44 @@ namespace Reversi
             }
         }
 
+        public void DraaiIngeslotenStenenOm(int x, int y)
+        {
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (!(i == 0 & j == 0))
+                    {
+						// kijk of positie niet buiten het boord
+						try
+						{
+							// kijk of er een andere speler omheen staat
+							if (bol[x + i, y + j] == tegenstander(playercounter))
+							{
+								int count = 1;
+
+								// check volgende plekken zolang deze nog tegenstanders zijn
+								while (bol[x + i * count, y + j * count] == tegenstander(playercounter))
+								{
+									count++;
+								}
+
+								// kijk of de plek leeg is
+                                if (bol[x + i * count, y + j * count] == playercounter)
+								{
+                                    while(count > 0){
+                                        count--;
+                                        bol[x + i * count, y + j * count] = playercounter;
+                                    }
+								}
+							}
+						}
+						catch (Exception e) { }
+                    }
+                }
+            }
+        }
+
         public int tegenstander(int playercounter)
         {
             if (playercounter == 1)
@@ -227,6 +265,7 @@ namespace Reversi
             {
                 bol[x, y] = playercounter;
                 VerwijderMogelijkeStenen();
+                DraaiIngeslotenStenenOm(x, y);
                 playercounter = tegenstander(playercounter);
                 speelveld.Invalidate();
             }
