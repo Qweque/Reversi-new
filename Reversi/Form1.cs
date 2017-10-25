@@ -15,6 +15,7 @@ namespace Reversi
         
         int veldx = 6; int veldy = 6;        
         int playercounter = 1;
+        bool helpaan = true;
         bool plaatcheck;
         int[,] bol = new int[15, 8];
         int[,] help = new int[15, 8];
@@ -38,7 +39,7 @@ namespace Reversi
             x_veld.Text = veldx.ToString();
 
             //Playercounter
-            if (playercounter == 2)
+            if (playercounter == 1)
             {
                 Playercounter.Text = "Rood is aan zet";
                 Playercounter.ForeColor = Color.Red;
@@ -61,7 +62,8 @@ namespace Reversi
                 gr.DrawLine(Pens.Black, 0, positie * y, veldx * positie, positie * y);
             }
 
-            
+            //Check de mogelijke stenen
+            this.CheckMogelijkeStenen();
 
             //Teken de steentjes
             for (int n = 0; n < veldx; n++)
@@ -75,8 +77,82 @@ namespace Reversi
                     {
                         this.TekenBol(pea.Graphics, blauw, positie * n + 1, positie * m + 1);
                     }
+                    if (bol[n,m] == -1 && helpaan)
+                    {
+                        this.TekenHelp(pea.Graphics, positie * n + 1, positie * m + 1);
+                    }
+                    if (bol[n, m] == -2)
+                    {
+                        this.TekenBol(pea.Graphics, Brushes.Yellow, positie * n + 1, positie * m + 1);
+                    }
                 }
 
+        }
+
+        public void CheckMogelijkeStenen()
+        {
+            for (int x = 0; x < veldx; x++)
+            {
+                for (int y = 0; y < veldy; y++)
+                {
+                    // kijk of het de huidige speler is
+                    if (bol[x,y] == playercounter)
+                    {
+                        for (int i = -1; i <= 1; i++)
+                        {
+                            for (int j = -1; j <= 1; j++)
+                            {
+								if (!(i == 0 & j == 0))
+								{
+                                    // kijk of positie niet buiten het boord
+                                    try
+                                    {
+                                        // kijk of er een andere speler omheen staat
+                                        if (bol[x + i, y + j] == tegenstander(playercounter))
+                                        {
+                                            int count = 1;
+
+                                            // check volgende plekken zolang deze nog tegenstanders zijn
+                                            while (bol[x + i * count, y + j * count] == tegenstander(playercounter))
+                                            {
+                                                count++;
+                                            }
+
+											// kijk of de plek leeg is
+											if (bol[x + i * count, y + j * count] == 0)
+											{
+												bol[x + i * count, y + j * count] = -1;
+											}
+                                        }
+                                    } catch (Exception e) {}
+								}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void VerwijderMogelijkeStenen()
+        {
+            for (int x = 0; x < veldx; x++)
+            {
+                for (int y = 0; y < veldy; y++)
+                {
+                    if (bol[x,y] == -1)
+                    {
+                        bol[x, y] = 0;
+                    } 
+                }
+            }
+        }
+
+        public int tegenstander(int playercounter)
+        {
+            if (playercounter == 1)
+                return 2;
+            else
+                return 1;
         }
 
         public void Nieuw_Spel(object sender, EventArgs ea)
@@ -126,26 +202,10 @@ namespace Reversi
 
         private void speelveld_MouseClick(object sender, MouseEventArgs mea)
         {
-            //Playercounter switcher
-            if (playercounter == 1)
-                playercounter++;
-            else
-                playercounter--;
-
             //Vul de array met de juiste waarde op de juiste plek
             int vakjex = mea.X / positie;
             int vakjey = mea.Y / positie;
-                        
-            Plaatscheck(playercounter, mea.X, mea.Y);
-
-            if (playercounter == 1 && plaatcheck)
-                bol[vakjex, vakjey] = 1;
-            if (playercounter == 2 && plaatcheck)
-                bol[vakjex, vakjey] = 2;
-
-            
-
-            speelveld.Invalidate();
+            plaatsSpeler(vakjex, vakjey);
         }
 
 
@@ -156,129 +216,94 @@ namespace Reversi
 
         public void TekenHelp(Graphics gr, int x, int y)
         {
-            gr.DrawEllipse(Pens.Black, x, y, BolSize / 2, BolSize / 2);
+            gr.DrawEllipse(Pens.Black, x + BolSize / 4, y + BolSize / 4, BolSize / 2, BolSize / 2);
         }
 
         // maak een methode voor het checken van de omliggenden plaatsen 
-        public bool Plaatscheck(int playercounter, int x, int y)
+        public void plaatsSpeler(int x, int y)
         {
-            plaatcheck = false;
-            int p = playercounter;
-
-            //boven
-            if (bol[x, y] == 0)
-                if (bol[x, y - 1] != p && p != 0)
-                    ZetCheck(p, x, y, 0, -1);
-
-            //rechtboven
-            if (bol[x, y] == 0)
-                if (bol[x + 1, y - 1] != p && p != 0)
-                    ZetCheck(p, x, y, 1, -1);
-
-            //rechts
-            if (bol[x, y] == 0)
-                if (bol[x + 1, y] != p && p != 0)
-                    ZetCheck(p, x, y, 1, 0);
-
-            //rechtsonder
-            if (bol[x, y] == 0)
-                if (bol[x + 1, y + 1] != p && p != 0)
-                    ZetCheck(p, x, y, 1, 1);
-
-            //onder
-            if (bol[x, y] == 0)
-                if (bol[x, y + 1] != p && p != 0)
-                    ZetCheck(p, x, y, 0, 1);
-
-            //linksonder
-            if (bol[x, y] == 0)
-                if (bol[x - 1, y + 1] != p && p != 0)
-                    ZetCheck(p, x, y, - 1, 1);
-
-            //links
-            if (bol[x, y] == 0)
-                if (bol[x - 1, y] != p && p != 0)
-                    ZetCheck(p, x, y, -1, 0);
-
-            //linksboven
-            if (bol[x, y] == 0)
-                if (bol[x - 1, y - 1] != p && p != 0)
-                    ZetCheck(p, x, y, -1, -1);
-
-            return plaatcheck;
+            // is het een mogelijke plaats
+            if (bol[x,y] == -1)
+            {
+                bol[x, y] = playercounter;
+                VerwijderMogelijkeStenen();
+                playercounter = tegenstander(playercounter);
+                speelveld.Invalidate();
+            }
         
         }
+
         // maak een methode die checkt in de richting van de gevonden steen
         public bool ZetCheck (int playercounter, int x, int y, int dx, int dy)
         {
-            int mx;
-            int my;
+            //int mx;
+            //int my;
             int p = playercounter;
 
-            //rechts
-            if(dx > 0)
-            {
-                if (dy > 0)
-                {
-                    for (mx = x; mx + dx < 15; x++)
-                        for (my = y; my + dy < 15; x++)
-                        {
-                            x += dx;
-                            y += dy;
+            ////rechts
+            //if(dx > 0)
+            //{
+            //    if (dy > 0)
+            //    {
+            //        for (mx = x; mx + dx < 15; x++)
+            //            for (my = y; my + dy < 15; x++)
+            //            {
+            //                x += dx;
+            //                y += dy;
 
-                            if (bol[x, y] == p)
-                            {
-                                plaatcheck = true;
-                                return plaatcheck;
-                            }
+            //                if (bol[x, y] == p)
+            //                {
+            //                    plaatcheck = true;
+            //                    return plaatcheck;
+            //                }
 
-                        }
-                }
+            //            }
+            //    }
 
-                if(dy == 0)
-                {
+            //    if(dy == 0)
+            //    {
 
-                }
+            //    }
 
-                if (dy < 0)
-                {
+            //    if (dy < 0)
+            //    {
 
-                }
-            }
+            //    }
+            //}
 
-            //boven/onder
-            if(dx == 0)
-                if (dy > 0)
-                {
+            ////boven/onder
+            //if(dx == 0)
+            //    if (dy > 0)
+            //    {
 
-                }
+            //    }
 
-            if (dy == 0)
-            {
+            //if (dy == 0)
+            //{
 
-            }
+            //}
 
-            if (dy < 0)
-            {
+            //if (dy < 0)
+            //{
 
-            }
+            //}
 
-            //links
-            if (dx < 0)
-                if (dy > 0)
-                {
+            ////links
+            //if (dx < 0)
+            //    if (dy > 0)
+            //    {
 
-                }
+            //    }
 
-            if (dy == 0)
-            {
+            //if (dy == 0)
+            //{
 
-            }
+            //}
 
-            if (dy < 0)
-            {
+            //if (dy < 0)
+            //{
 
-            }
+            //}
 
             return plaatcheck;
         }
